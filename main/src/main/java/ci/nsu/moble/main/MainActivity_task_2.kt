@@ -56,23 +56,30 @@ class MainActivity_task_2 : ComponentActivity() {
 //    )
 //}
 
-fun ColorInputScreen(modifier: Modifier= Modifier)
-{
+
+fun ColorInputScreen(modifier: Modifier = Modifier) {
     var color_name by remember { mutableStateOf("") }
-    TextField(
-        value = color_name,
-        onValueChange = {newText -> color_name = newText},// это для обработки ввода текста
-        label = {Text(text = "Введите цвет")},
-        modifier = Modifier.fillMaxWidth()//можно убрать
 
-    )
-    Spacer(modifier = Modifier.height(10.dp))
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
+        TextField(
+            value = color_name,
+            onValueChange = { newText -> color_name = newText },
+            label = { Text(text = "Введите цвет") },
+            modifier = Modifier.fillMaxWidth()
+        )
 
-    Button(
-        onClick = {/*gnoejrngoeii*/ },
-        modifier = Modifier.fillMaxWidth()
-    ){
-        Text("Окрасить в цвет")
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Button(
+            onClick = { /* действие */ },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Окрасить в цвет")
+        }
     }
 }
 @Preview(showBackground = true)
