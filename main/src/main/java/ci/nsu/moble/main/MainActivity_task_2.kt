@@ -29,7 +29,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 
-
+import android.util.Log
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.graphics.Color
+import ci.nsu.moble.main.ui.theme.MainColors
 class MainActivity_task_2 : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,7 +63,8 @@ class MainActivity_task_2 : ComponentActivity() {
 
 fun ColorInputScreen(modifier: Modifier = Modifier) {
     var color_name by remember { mutableStateOf("") }
-
+    val primary_color = MaterialTheme.colorScheme.primary
+    var button_color by remember { mutableStateOf(primary_color) }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -75,8 +80,19 @@ fun ColorInputScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
-            onClick = { /* действие */ },
-            modifier = Modifier.fillMaxWidth()
+            onClick = {
+                val down_reg = color_name.lowercase()
+                val select_color = MainColors[down_reg]
+                if (select_color!=null) {
+                    button_color = select_color
+                    Log.d("Поиск цвета","Цвет найден: $down_reg")
+                }
+                else{
+                    Log.d("Поиск цвета","Цвет не найден: $down_reg")
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = button_color)
         ) {
             Text("Окрасить в цвет")
         }
