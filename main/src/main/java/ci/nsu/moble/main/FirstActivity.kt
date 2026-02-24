@@ -1,67 +1,47 @@
 package ci.nsu.moble.main
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import ci.nsu.moble.main.ui.theme.PracticeTheme
 
 class FirstActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
             PracticeTheme {
-                FirstScreen(
-                    onNavigateToSecond = { message ->
-
-                        val intent = Intent(this, SecondActivity::class.java).apply {
-                            putExtra("EXTRA_MESSAGE", message)
-                        }
-                        startActivity(intent)
-                    }
-                )
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    Greeting(
+                        name = "Android",
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun FirstScreen(
-    onNavigateToSecond: (String) -> Unit
-) {
-    var text by remember { mutableStateOf("") }
+fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Hello $name!",
+        modifier = modifier
+    )
+}
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        TextField(
-            value = text,
-            onValueChange = { text = it },
-            label = { Text("Введите сообщение") },
-            modifier = Modifier.fillMaxWidth()
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = {
-                if (text.isNotBlank()) {
-                    onNavigateToSecond(text)
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Перейти на второй экран")
-        }
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    PracticeTheme {
+        Greeting("Android")
     }
 }
