@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ci.nsu.moble.main.ui.theme.PracticeTheme
+import androidx.compose.material3.TextField
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -21,9 +22,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             PracticeTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
-                    LaunchScreen(
-                        modifier = Modifier.padding(paddingValues)
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    MainScreen(
+                        modifier = Modifier.padding(innerPadding)
                     )
                 }
             }
@@ -32,8 +33,8 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun LaunchScreen(modifier: Modifier = Modifier) {
-    var userInput by remember { mutableStateOf("") }
+fun MainScreen(modifier: Modifier = Modifier) {
+    var inputText by remember { mutableStateOf("") }
     val context = LocalContext.current
 
     Column(
@@ -48,37 +49,38 @@ fun LaunchScreen(modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.headlineLarge
         )
 
-        Spacer(modifier = Modifier.height(40.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
-        TextField(
-            value = userInput,
-            onValueChange = { userInput = it },
+        OutlinedTextField(
+            value = inputText,
+            onValueChange = { inputText = it },
             label = { Text("Введите сообщение") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         Button(
             onClick = {
+
                 val intent = Intent(context, Main2Activity::class.java).apply {
-                    putExtra("message_key", userInput)
+                    putExtra("user_message", inputText)
                 }
                 context.startActivity(intent)
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = userInput.isNotBlank()
+            enabled = inputText.isNotBlank()
         ) {
-            Text("Перейти на Main2Activity")
+            Text("Открыть Main2Activity")
         }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun LaunchScreenPreview() {
+fun MainScreenPreview() {
     PracticeTheme {
-        LaunchScreen()
+        MainScreen()
     }
 }

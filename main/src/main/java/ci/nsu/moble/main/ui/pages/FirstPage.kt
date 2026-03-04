@@ -38,7 +38,7 @@ fun FirstPage() {
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "Здесь может быть ваш контент",
+                text = "Что-то тут первое",
                 style = MaterialTheme.typography.bodyLarge
             )
         }

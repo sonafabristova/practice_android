@@ -38,7 +38,7 @@ fun SecondPage() {
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "Здесь может быть информация о пользователе",
+                text = "Что-то тут второе",
                 style = MaterialTheme.typography.bodyLarge
             )
         }

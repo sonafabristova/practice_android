@@ -19,7 +19,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import ci.nsu.moble.main.navigation.Destination
+import ci.nsu.moble.main.navigation.NavRoutes
+
 import ci.nsu.moble.main.ui.pages.StartPage
 import ci.nsu.moble.main.ui.pages.FirstPage
 import ci.nsu.moble.main.ui.pages.SecondPage
@@ -43,13 +44,15 @@ fun Main2Screen() {
     val navController = rememberNavController()
     val context = LocalContext.current
 
-    val incomingText = remember {
-        (context as? Activity)?.intent?.getStringExtra("message_key") ?: "Пусто"
+    // получаем переданные данные
+    val receivedMessage = remember {
+        (context as? Activity)?.intent?.getStringExtra("user_message") ?: "Нет данных"
     }
 
-    val navStackEntry by navController.currentBackStackEntryAsState()
-    val currentPath = navStackEntry?.destination?.route
-    val activeDestination = Destination.getDestinationByRoute(currentPath)
+    // получаем текущий путь
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+    val currentScreen = NavRoutes.fromRoute(currentRoute)
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -57,17 +60,20 @@ fun Main2Screen() {
             TopAppBar(
                 title = {
                     Text(
-                        when (activeDestination) {
-                            Destination.Start -> "Главная страница"
-                            Destination.First -> "Первая страница"
-                            Destination.Second -> "Вторая страница"
+                        when (currentScreen) {
+                            NavRoutes.Start -> "Старт"
+                            NavRoutes.First -> "Первый"
+                            NavRoutes.Second -> "Второй"
                         }
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = {
-                        (context as? Activity)?.finish()
-                    }) {
+                    IconButton(
+                        onClick = {
+                            // возвращаемся в MainActivity
+                            (context as? Activity)?.finish()
+                        }
+                    ) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Назад",
@@ -76,29 +82,29 @@ fun Main2Screen() {
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF2196F3),
+                    containerColor = Color(0xFF6200EE),
                     titleContentColor = Color.White
                 )
             )
         },
         bottomBar = {
             NavigationBar {
-                Destination.bottomItems.forEach { destination ->
+                NavRoutes.bottomNavItems.forEach { screen ->
                     NavigationBarItem(
                         icon = {
                             Icon(
-                                imageVector = when (destination) {
-                                    Destination.Start -> Icons.Filled.Home
-                                    Destination.First -> Icons.Filled.Star
-                                    Destination.Second -> Icons.Filled.Person
+                                imageVector = when (screen) {
+                                    NavRoutes.Start -> Icons.Filled.Home
+                                    NavRoutes.First -> Icons.Filled.Star
+                                    NavRoutes.Second -> Icons.Filled.Person
                                 },
-                                contentDescription = destination.label
+                                contentDescription = screen.title
                             )
                         },
-                        label = { Text(destination.label) },
-                        selected = activeDestination == destination,
+                        label = { Text(screen.title) },
+                        selected = currentScreen == screen,
                         onClick = {
-                            navController.navigate(destination.route) {
+                            navController.navigate(screen.route) {
                                 launchSingleTop = true
                                 restoreState = true
                             }
@@ -107,23 +113,23 @@ fun Main2Screen() {
                 }
             }
         }
-    ) { paddingValues ->
+    ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Destination.Start.route,
-            modifier = Modifier.padding(paddingValues)
+            startDestination = NavRoutes.Start.route,
+            modifier = Modifier.padding(innerPadding)
         ) {
-            composable(Destination.Start.route) {
+            composable(NavRoutes.Start.route) {
                 StartPage(
-                    message = incomingText
+                    message = receivedMessage
                 )
             }
 
-            composable(Destination.First.route) {
+            composable(NavRoutes.First.route) {
                 FirstPage()
             }
 
-            composable(Destination.Second.route) {
+            composable(NavRoutes.Second.route) {
                 SecondPage()
             }
         }
