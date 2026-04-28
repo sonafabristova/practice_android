@@ -34,7 +34,7 @@ fun MainScreen(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "✅ ЭТАП 1 ЗАВЕРШЁН!",
+            text = " ЭТАП 1 ЗАВЕРШЁН!",
             style = MaterialTheme.typography.headlineMedium
         )
 
