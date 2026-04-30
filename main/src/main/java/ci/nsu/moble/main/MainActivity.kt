@@ -3,59 +3,55 @@ package ci.nsu.moble.main
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import ci.nsu.moble.main.ui.theme.PracticeTheme
+import ci.nsu.moble.main.ui.screens.LoginScreen
+
+// Временная тема
+import androidx.compose.material3.MaterialTheme
+
+@Composable
+fun TempTheme(content: @Composable () -> Unit) {
+    MaterialTheme(content = content)
+}
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            PracticeTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MainScreen(modifier = Modifier.padding(innerPadding))
+            TempTheme {  // ← используем временную тему
+                Scaffold(
+                    modifier = Modifier.fillMaxSize()
+                ) { innerPadding ->
+                    var isLoggedIn by remember { mutableStateOf(false) }
+                    var showRegister by remember { mutableStateOf(false) }
+
+                    when {
+                        showRegister -> {
+                            Text(
+                                text = "Экран регистрации",
+                                modifier = Modifier.padding(innerPadding)
+                            )
+                        }
+                        isLoggedIn -> {
+                            Text(
+                                text = "Экран пользователей",
+                                modifier = Modifier.padding(innerPadding)
+                            )
+                        }
+                        else -> {
+                            LoginScreen(
+                                onLoginSuccess = { isLoggedIn = true },
+                                onNavigateToRegister = { showRegister = true }
+                            )
+                        }
+                    }
                 }
             }
-        }
-    }
-}
-
-@Composable
-fun MainScreen(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = " ЭТАП 1 ЗАВЕРШЁН!",
-            style = MaterialTheme.typography.headlineMedium
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "Проект настроен:\n" +
-                    "• Зависимости добавлены\n" +
-                    "• Разрешение INTERNET\n" +
-                    "• network_security_config\n" +
-                    "• Activity работает",
-            style = MaterialTheme.typography.bodyLarge
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Button(
-            onClick = { /* пока ничего */ },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Переход к этапу 2")
         }
     }
 }
