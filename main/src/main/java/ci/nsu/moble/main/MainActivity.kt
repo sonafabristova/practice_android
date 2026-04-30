@@ -10,20 +10,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import ci.nsu.moble.main.ui.screens.LoginScreen
-
-// Временная тема
-import androidx.compose.material3.MaterialTheme
-
-@Composable
-fun TempTheme(content: @Composable () -> Unit) {
-    MaterialTheme(content = content)
-}
+import ci.nsu.moble.main.ui.screens.RegisterScreen
+import ci.nsu.moble.main.ui.theme.PracticeTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            TempTheme {  // ← используем временную тему
+            PracticeTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
@@ -32,14 +26,16 @@ class MainActivity : ComponentActivity() {
 
                     when {
                         showRegister -> {
-                            Text(
-                                text = "Экран регистрации",
-                                modifier = Modifier.padding(innerPadding)
+                            RegisterScreen(
+                                onRegisterSuccess = {
+                                    showRegister = false
+                                },
+                                onBackToLogin = { showRegister = false }
                             )
                         }
                         isLoggedIn -> {
                             Text(
-                                text = "Экран пользователей",
+                                text = "Экран пользователей (будет в этапе 9)",
                                 modifier = Modifier.padding(innerPadding)
                             )
                         }
