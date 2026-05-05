@@ -1,6 +1,6 @@
+package ci.nsu.moble.main.network
 
-package ci.nsu.moble.main.auth
-
+import ci.nsu.moble.main.auth.TokenManager
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -9,21 +9,21 @@ class AuthInterceptor(
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        // Получаем исходный запрос
         val originalRequest = chain.request()
 
-        // Строим новый запрос с заголовками
+
+        val token = tokenManager.getTokenSync()
+
         val requestBuilder = originalRequest.newBuilder()
             .addHeader("Content-Type", "application/json")
 
-        // Добавляем токен, если он есть
-        val token = tokenManager.getTokenSync()
         if (!token.isNullOrBlank()) {
             requestBuilder.addHeader("Authorization", "Bearer $token")
+            println("✅ Токен добавлен в заголовок: ${token.take(20)}...")
+        } else {
+            println("❌ Токен пустой! Заголовок Authorization НЕ добавлен")
         }
 
-        // Выполняем запрос
-        val request = requestBuilder.build()
-        return chain.proceed(request)
+        return chain.proceed(requestBuilder.build())
     }
 }

@@ -14,7 +14,7 @@ fun RegisterScreen(
     onRegisterSuccess: () -> Unit,
     onBackToLogin: () -> Unit
 ) {
-    // Поля формы
+    // Локальные переменные для полей
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var middleName by remember { mutableStateOf("") }
@@ -35,14 +35,10 @@ fun RegisterScreen(
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
-            text = "Регистрация",
-            style = MaterialTheme.typography.headlineLarge
-        )
+        Text("Регистрация", style = MaterialTheme.typography.headlineLarge)
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // ФИО
         OutlinedTextField(
             value = lastName,
             onValueChange = { lastName = it },
@@ -73,7 +69,6 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Дата рождения
         OutlinedTextField(
             value = birthDate,
             onValueChange = { birthDate = it },
@@ -85,12 +80,7 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Пол
-        Text(
-            text = "Пол *",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.align(Alignment.Start)
-        )
+        Text("Пол *", style = MaterialTheme.typography.titleMedium)
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -107,7 +97,6 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Учётные данные
         OutlinedTextField(
             value = login,
             onValueChange = { login = it },
@@ -177,9 +166,7 @@ fun RegisterScreen(
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        TextButton(
-            onClick = onBackToLogin
-        ) {
+        TextButton(onClick = onBackToLogin) {
             Text("Уже есть аккаунт? Войти")
         }
     }

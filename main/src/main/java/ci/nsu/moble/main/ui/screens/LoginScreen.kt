@@ -5,17 +5,25 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import ci.nsu.moble.main.viewmodel.AuthViewModel
 
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
-    var login by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var isLoading by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+    val viewModel: AuthViewModel = viewModel()
+    val state = viewModel.loginState.collectAsState().value
+
+    LaunchedEffect(state.isSuccess) {
+        if (state.isSuccess) {
+            viewModel.resetLoginSuccess()
+            onLoginSuccess()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -24,36 +32,36 @@ fun LoginScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "Вход в систему",
-            style = MaterialTheme.typography.headlineLarge
-        )
+        Text("Вход в систему", style = MaterialTheme.typography.headlineLarge)
 
         Spacer(modifier = Modifier.height(32.dp))
 
         OutlinedTextField(
-            value = login,
-            onValueChange = { login = it },
+            value = state.login,
+            onValueChange = { viewModel.updateLogin(it) },
             label = { Text("Логин") },
             modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            singleLine = true,
+            isError = state.errorMessage != null && state.login.isBlank()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = state.password,
+            onValueChange = { viewModel.updatePassword(it) },
             label = { Text("Пароль") },
             modifier = Modifier.fillMaxWidth(),
-            singleLine = true
+            singleLine = true,
+            visualTransformation = PasswordVisualTransformation(),
+            isError = state.errorMessage != null && state.password.isBlank()
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        if (errorMessage != null) {
+        if (state.errorMessage != null) {
             Text(
-                text = errorMessage!!,
+                text = state.errorMessage!!,
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall
             )
@@ -62,25 +70,20 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Button(
-            onClick = {
-                if (login.isBlank() || password.isBlank()) {
-                    errorMessage = "Заполните все поля"
-                } else {
-                    // Временный вход (любые данные подходят)
-                    onLoginSuccess()
-                }
-            },
+            onClick = { viewModel.login(onLoginSuccess) },
             modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading
+            enabled = !state.isLoading
         ) {
-            Text("Войти")
+            if (state.isLoading) {
+                CircularProgressIndicator(modifier = Modifier.size(24.dp))
+            } else {
+                Text("Войти")
+            }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(
-            onClick = onNavigateToRegister
-        ) {
+        TextButton(onClick = onNavigateToRegister) {
             Text("Нет аккаунта? Зарегистрироваться")
         }
     }
